@@ -13,6 +13,7 @@ except:
 
 bot = discord.Bot()
 openai.api_key=os.getenv('OPENAI_API_KEY')
+messages=[]
 
 @bot.event
 async def on_ready():
@@ -40,18 +41,23 @@ async def sync(interaction: discord.Interaction):
 )
 async def chat(interaction: discord.Interaction, message: str):
     await interaction.response.defer()
-    completion = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=message,
+    messages.append({"role": "user", "content": message})
+    if (len(messages)==100):
+        messages.pop(0)
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
         max_tokens=1500
         )
     response=completion.get("choices", "error")
     if (response=='error'):
         await interaction.followup.send("An error occured, please try after some time!")
+        messages=[]
     else:
-        outMessage=response[0]["text"]
+        outMessage=response[0]["message"]["content"]
         await interaction.followup.send(f'**Asked**: {message}')
         await interaction.followup.send(f'**Response**: {outMessage}')
+        messages.append(response[0]["message"])
 
 keep_alive()
 bot.run(os.getenv('BOT_TOKEN'))
