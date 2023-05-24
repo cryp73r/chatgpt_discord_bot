@@ -1,2 +1,3 @@
 # Ignore dev config files
-/dev
+dev/
+__pycache__/
