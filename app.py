@@ -2,6 +2,7 @@ import discord, openai, os
 from discord import option
 from dotenv import load_dotenv
 from pathlib import Path
+from keep_alive import keep_alive
 
 try:
     print('On Development Environment')
@@ -52,4 +53,5 @@ async def chat(interaction: discord.Interaction, message: str):
         await interaction.followup.send(f'**Asked**: {message}')
         await interaction.followup.send(f'**Response**: {outMessage}')
 
+keep_alive()
 bot.run(os.getenv('BOT_TOKEN'))
