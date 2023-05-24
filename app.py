@@ -40,6 +40,7 @@ async def sync(interaction: discord.Interaction):
     required=True
 )
 async def chat(interaction: discord.Interaction, message: str):
+    global messages
     await interaction.response.defer()
     messages.append({"role": "user", "content": message})
     if (len(messages)==100):
